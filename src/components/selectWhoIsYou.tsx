@@ -6,10 +6,11 @@ import usePeople from "@/hooks/usePeople";
 
 function SelectWhoIsYou() {
     const { next } = useStepper();
-    const { personSelected } = usePeople();
+    const { people, personSelected, setPerson, load } = usePeople();
+    const peopleAvailable = people.filter(({secretFriendId}) => !secretFriendId );
     return (
         <Stack alignItems="center" spacing={3}>
-            <ListOfPeople />
+            <ListOfPeople {...{people: peopleAvailable, personSelected, setPerson, load}}/>
             <Button
                 size="large"
                 variant="contained"

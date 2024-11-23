@@ -1,3 +1,4 @@
+import { Person } from "@/contexts/peopleContext";
 import usePeople from "@/hooks/usePeople";
 import Avatar from "@mui/material/Avatar";
 import Checkbox from "@mui/material/Checkbox";
@@ -10,22 +11,28 @@ import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-function ListOfPeople() {
-    const { people, personSelected, setPerson, load } = usePeople();
-    const peopleAvailable = people.filter(({secretFriendId}) => !secretFriendId );
+interface ListOfPeopleProps {
+    people: Person[];
+    personSelected: Person;
+    setPerson: (Person: Person) => void;
+    load: boolean
+}
+
+function ListOfPeople(props: ListOfPeopleProps) {
+    const { people, personSelected, setPerson, load } = props;
     return (
         <>
-            {load ? 
+            {load ?
                 <Stack sx={{ height: 240, justifyContent:"center", alignItems:"center" }}>
                     <CircularProgress />
                 </Stack> :
                 <>
-                    {peopleAvailable.length === 0 ? 
+                    {people.length === 0 ?
                         <Stack sx={{ height: 240, justifyContent:"center", alignItems:"center" }}>
                             <Typography variant="subtitle1">Todos já selecionaram um amigo</Typography>
                         </Stack>
                         : <List sx={{ width: '100%', maxWidth: 360, height: 240, pt: 0, pb: 0, overflow: 'auto', bgcolor: 'background.paper' }}>
-                            {peopleAvailable.map( person => (
+                            {people.map( person => (
                                 <ListItem
                                     key={person.id}
                                     secondaryAction={

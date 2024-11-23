@@ -1,5 +1,5 @@
 import { db } from "@/services/firebase";
-import { collection, doc, getDocs, updateDoc, writeBatch } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { createContext, useEffect, useState } from "react";
 
 export interface Person {
@@ -9,6 +9,7 @@ export interface Person {
     secretFriendId: string,
     isAFriend: boolean,
     cantBeFriend: string[],
+    wishes?: string,
 } 
 
 interface IPeopleContext {
@@ -19,6 +20,7 @@ interface IPeopleContext {
     clearAll: () => Promise<void>;
     secretFriend: Person;
     load: boolean;
+    saveWishes: (Person: Person, Wishes: string) => void
 }
 
 export const PeopleContext = createContext<IPeopleContext>({} as IPeopleContext);
@@ -59,6 +61,12 @@ export const PeopleProvider = function({ children }: Props){
         await batch.commit();
         setSecretFriend(newFriend);
         setLoad(false);
+    }
+
+    const saveWishes = async (person: Person, wishes: string) => {
+        setLoad(true);
+        await setDoc(doc(db, PEOPLE_COLLECTION_NAME, person.id),{ wishes }, { merge: true })
+        setLoad(false);
     } 
 
     const clearAll = async () => {
@@ -82,7 +90,7 @@ export const PeopleProvider = function({ children }: Props){
     }
 
     return (
-        <PeopleContext.Provider value={{people, personSelected, setPerson, getASecretFriend, secretFriend, load, clearAll}}>
+        <PeopleContext.Provider value={{people, personSelected, setPerson, getASecretFriend, secretFriend, load, clearAll, saveWishes}}>
             {children}
         </PeopleContext.Provider>
     )
