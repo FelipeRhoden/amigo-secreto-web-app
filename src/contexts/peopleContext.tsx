@@ -10,7 +10,7 @@ export interface Person {
     isAFriend: boolean,
     cantBeFriend: string[],
     wishes?: string,
-} 
+}
 
 interface IPeopleContext {
     people: Person[];
@@ -73,7 +73,7 @@ export const PeopleProvider = function({ children }: Props){
         setLoad(true);
         const batch = writeBatch(db);
         people.forEach( person => {
-            batch.update(doc(db, PEOPLE_COLLECTION_NAME, person.id), { secretFriendId: null, isAFriend: false })
+            batch.update(doc(db, PEOPLE_COLLECTION_NAME, person.id), { secretFriendId: null, isAFriend: false, wishes: null })
         })
         await batch.commit();
         await loadPeople();
